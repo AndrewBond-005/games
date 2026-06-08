@@ -49,7 +49,6 @@ function App() {
   );
 }
 
-
 function TitleScreen({ onStart }: { onStart: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -64,25 +63,17 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
     canvas.width = width;
     canvas.height = height;
 
-    // ---- ОГРОМНЫЙ НАБОР СИМВОЛОВ (более 150 уникальных) ----
     const symbols = [
-      // Математика
       '∫', '∑', 'π', '√', '∞', '∂', 'Δ', 'θ', 'λ', 'μ', 'σ', 'ω', '≈', '≠', '≤', '≥', '→', '∀', '∃', '∅',
       'α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'ι', 'κ', 'ν', 'ξ', 'ο', 'ρ', 'τ', 'υ', 'φ', 'χ', 'ψ',
       '∇', '∈', '∉', '⊂', '⊃', '∩', '∪', '⊗', '⊕', '⊻', '∮', '∯', '∰', '∝', '∠', '⊥', '∥', '∴', '∵', '∼', '≅', '≡', '≪', '≫',
-      // Греческие заглавные
       'Γ', 'Δ', 'Θ', 'Λ', 'Ξ', 'Π', 'Σ', 'Φ', 'Ψ', 'Ω',
-      // Уравнения
       'E=mc²', 'F=ma', 'E=hν', 'PV=nRT', 'a²+b²=c²', 'e^{iπ}+1=0', '∫eˣdx=eˣ+C',
       'sin²θ+cos²θ=1', 'ΔxΔp≥ħ/2', '∮F·ds=0', '∇·E=ρ/ε₀', '∇×B=μ₀J',
       'x=(-b±√Δ)/2a', '∑1/n²=π²/6', 'e=lim(1+1/n)ⁿ', 'ln(ab)=ln a+ln b',
       'd/dx x²=2x', '∂²ψ/∂x²', '∫∫∫div F dV', '∬F·dS',
-      // Ещё символы
-      '√', '∛', '∜', '∫∫', '∮', '⊕', '⊗', '⊙', '⊖', '⊘', '⨀', '⨁', '⨂',
-      '≠', '≈', '≡', '≢', '≣', '≤', '≥', '≦', '≧', '≨', '≩', '⋘', '⋙',
     ];
 
-    // ---- ПЛАВАЮЩИЕ СИМВОЛЫ (300 штук!) ----
     const floatingSymbols: {
       x: number; y: number; text: string; size: number; speedX: number; speedY: number; alpha: number; rot: number; rotSpeed: number;
     }[] = [];
@@ -100,7 +91,6 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
       });
     }
 
-    // ---- ЧАСТИЦЫ (300 мерцающих точек) ----
     const particles: { x: number; y: number; vx: number; vy: number; size: number; alpha: number; pulseSpeed: number }[] = [];
     for (let i = 0; i < 1000; i++) {
       particles.push({
@@ -114,7 +104,6 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
       });
     }
 
-    // ---- ЗВЁЗДЫ (500 штук для глубины) ----
     const stars: { x: number; y: number; size: number; baseBrightness: number; twinkleSpeed: number }[] = [];
     for (let i = 0; i < 5000; i++) {
       stars.push({
@@ -126,7 +115,6 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
       });
     }
 
-    // ---- ЛИНИИ СЕТКИ (для текстуры) ----
     const gridLines: { x1: number; y1: number; x2: number; y2: number; alpha: number }[] = [];
     for (let i = 0; i < 400; i++) {
       gridLines.push({
@@ -142,7 +130,6 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
     let animationId: number;
 
     const animate = () => {
-      // Обновляем размеры при изменении окна
       if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -152,7 +139,6 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
 
       time += 0.008;
 
-      // ---- ФОН: сложный градиент ----
       const grad = ctx.createLinearGradient(0, 0, width * 0.7, height);
       grad.addColorStop(0, '#070714');
       grad.addColorStop(0.3, '#0f0f22');
@@ -161,14 +147,12 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, width, height);
 
-      // ---- ВТОРИЧНЫЙ ГРАДИЕНТ (эффект свечения в центре) ----
       const radialGrad = ctx.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, width * 0.6);
       radialGrad.addColorStop(0, 'rgba(80, 50, 20, 0.15)');
       radialGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = radialGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // ---- СЕТКА (медленно пульсирует) ----
       for (let line of gridLines) {
         ctx.beginPath();
         ctx.moveTo(line.x1, line.y1);
@@ -178,14 +162,12 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
         ctx.stroke();
       }
 
-      // ---- ЗВЁЗДЫ (мерцают) ----
       for (let star of stars) {
         const brightness = star.baseBrightness + Math.sin(time * star.twinkleSpeed * 10) * 0.25;
         ctx.fillStyle = `rgba(255, 240, 180, ${brightness * 0.9})`;
         ctx.fillRect(star.x, star.y, star.size, star.size);
       }
 
-      // ---- ЧАСТИЦЫ (движутся и пульсируют) ----
       for (let p of particles) {
         p.x += p.vx;
         p.y += p.vy;
@@ -201,7 +183,6 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
         ctx.fill();
       }
 
-      // ---- ПЛАВАЮЩИЕ СИМВОЛЫ (главная фишка) ----
       for (let s of floatingSymbols) {
         s.x += s.speedX;
         s.y += s.speedY;
@@ -222,7 +203,6 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
         ctx.restore();
       }
 
-      // ---- ДОПОЛНИТЕЛЬНЫЙ СЛОЙ: крупные полупрозрачные символы (для глубины) ----
       for (let i = 0; i < 50; i++) {
         const t = (time * 0.3 + i) % (Math.PI * 2);
         const x = width * (0.2 + Math.sin(t) * 0.15);
@@ -267,17 +247,24 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
             }}
         />
 
-        <div className="relative min-h-screen flex items-center justify-center overflow-hidden text-white p-6" style={{ zIndex: 1, position: 'relative' }}>
-          <div className="max-w-3xl text-center">
-            <div className="text-8xl mb-6 animate-bounce">🎓</div>
-            <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300 bg-clip-text text-transparent drop-shadow-2xl">
+        {/* УМЕНЬШЕННЫЙ КОНТЕНТ - все размеры и отступы сокращены */}
+        <div className="relative min-h-screen flex items-center justify-center overflow-hidden text-white p-4" style={{ zIndex: 1, position: 'relative' }}>
+          <div className="max-w-2xl text-center">
+            {/* Эмодзи меньше */}
+            <div className="text-6xl mb-3 animate-bounce">🎓</div>
+
+            {/* Заголовок меньше */}
+            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300 bg-clip-text text-transparent drop-shadow-2xl">
               Экзамен
             </h1>
-            <h2 className="text-3xl text-amber-200 mb-8">Списать и не попасться</h2>
 
-            <div className="bg-slate-800/60 backdrop-blur border-2 border-amber-600 rounded-2xl p-6 mb-8 text-left">
-              <h3 className="text-xl font-bold text-amber-300 mb-3">📜 Как играть:</h3>
-              <ul className="space-y-2 text-slate-200">
+            {/* Подзаголовок меньше */}
+            <h2 className="text-xl text-amber-200 mb-4">Списать и не попасться</h2>
+
+            {/* Блок с правилами - меньше отступы и шрифт */}
+            <div className="bg-slate-800/60 backdrop-blur border-2 border-amber-600 rounded-xl p-4 mb-5 text-left max-h-[50vh] overflow-y-auto">
+              <h3 className="text-base font-bold text-amber-300 mb-2">📜 Как играть:</h3>
+              <ul className="space-y-1 text-slate-200 text-sm">
                 <li>😞 <b>не поступайте в итмо и всё у вас будет хорошо</b></li>
                 <li>🎯 <b>Цель:</b> списать все 5 вопросов за 180 секунд</li>
                 <li>📦 <b>Подготовка:</b> разложи 8 шпор по 3 карманам с умом</li>
@@ -291,9 +278,10 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
               </ul>
             </div>
 
+            {/* Кнопка меньше */}
             <button
                 onClick={onStart}
-                className="px-12 py-5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900 rounded-2xl font-bold text-3xl shadow-2xl shadow-amber-500/50 hover:scale-105 transition-all"
+                className="px-8 py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-900 rounded-xl font-bold text-xl shadow-2xl shadow-amber-500/50 hover:scale-105 transition-all"
             >
               🎮 НАЧАТЬ ИГРУ
             </button>
@@ -302,7 +290,6 @@ function TitleScreen({ onStart }: { onStart: () => void }) {
       </>
   );
 }
-
 
 function EndScreen({ info, onNewGame }: { info: EndInfo; onNewGame: () => void }) {
   const isWin = info.result === 'win';

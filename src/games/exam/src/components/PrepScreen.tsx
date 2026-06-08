@@ -53,82 +53,121 @@ export default function PrepScreen({ onStart }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-6">
-          <h1 className="text-5xl font-bold mb-2 text-amber-300 drop-shadow-lg">📚 Подготовка к экзамену</h1>
-          <p className="text-lg text-slate-300">Разложи 8 шпаргалок по трём карманам. На вопрос типа Д шпоры нет — юзай телефон.</p>
-        </div>
-
-        {hintShown && (
-          <div className="bg-amber-900/40 border-2 border-amber-500 rounded-xl p-4 mb-6 relative">
-            <button className="absolute top-2 right-3 text-amber-300 hover:text-white text-xl" onClick={() => setHintShown(false)}>✕</button>
-            <p className="text-amber-100">💡 <b>Подсказка:</b> Разложи шпоры так, чтобы запомнить где какая! На экзамене ты будешь доставать шпоры вслепую — увидишь только название, но не помнишь, какую именно шпору положил.</p>
+      <div className="min-h-screen max-h-screen overflow-y-auto bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-4">
+        <div className="max-w-5xl mx-auto">
+          {/* Уменьшенный заголовок */}
+          <div className="text-center mb-4">
+            <h1 className="text-2xl font-bold mb-1 text-amber-300 drop-shadow-lg">📚 Подготовка к экзамену</h1>
+            <p className="text-sm text-slate-300">Разложи 8 шпаргалок по 3 карманам. На вопрос типа Д шпоры нет — юзай телефон.</p>
           </div>
-        )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-slate-800/60 rounded-2xl p-5 border border-slate-700">
-            <h2 className="text-2xl font-bold mb-4 text-amber-300">📝 Шпаргалки</h2>
-            <p className="text-sm text-slate-400 mb-3">Кликни на шпору, затем на карман, чтобы положить.</p>
-            <div className="grid grid-cols-2 gap-3">
-              {sheets.map((sheet) => {
-                const placed = isSheetPlaced(sheet.id);
-                return (
-                  <button key={sheet.id} onClick={() => handleSheetClick(sheet.id)} disabled={placed}
-                    className={`p-4 rounded-xl border-2 transition-all font-bold text-lg ${placed ? 'bg-slate-900/50 border-slate-700 text-slate-600 cursor-not-allowed' : selectedSheet === sheet.id ? 'bg-amber-500 border-amber-300 text-slate-900 scale-105 shadow-lg shadow-amber-500/50' : 'bg-amber-50 border-amber-700 text-slate-900 hover:scale-105 hover:shadow-lg'}`}>
-                    {placed ? '✓' : '📄'} {sheet.id}
-                  </button>
-                );
-              })}
+          {/* Уменьшенная подсказка */}
+          {hintShown && (
+              <div className="bg-amber-900/40 border border-amber-500 rounded-lg p-2 mb-4 relative">
+                <button className="absolute top-1 right-2 text-amber-300 hover:text-white text-sm" onClick={() => setHintShown(false)}>✕</button>
+                <p className="text-amber-100 text-xs">💡 <b>Подсказка:</b> Разложи шпоры так, чтобы запомнить где какая! На экзамене ты будешь доставать шпоры вслепую.</p>
+              </div>
+          )}
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Шпаргалки — уменьшенные карточки */}
+            <div className="bg-slate-800/60 rounded-xl p-3 border border-slate-700">
+              <h2 className="text-lg font-bold mb-2 text-amber-300">📝 Шпаргалки</h2>
+              <p className="text-xs text-slate-400 mb-2">Кликни на шпору, затем на карман.</p>
+              <div className="grid grid-cols-2 gap-2">
+                {sheets.map((sheet) => {
+                  const placed = isSheetPlaced(sheet.id);
+                  return (
+                      <button
+                          key={sheet.id}
+                          onClick={() => handleSheetClick(sheet.id)}
+                          disabled={placed}
+                          className={`py-2 rounded-lg border transition-all font-bold text-sm ${
+                              placed
+                                  ? 'bg-slate-900/50 border-slate-700 text-slate-600 cursor-not-allowed'
+                                  : selectedSheet === sheet.id
+                                      ? 'bg-amber-500 border-amber-300 text-slate-900 scale-105 shadow-md shadow-amber-500/50'
+                                      : 'bg-amber-50 border-amber-700 text-slate-900 hover:scale-105 hover:shadow-md'
+                          }`}
+                      >
+                        {placed ? '✓' : '📄'} {sheet.id}
+                      </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Карманы — уменьшенные */}
+            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-3">
+              {pockets.map((pocket) => (
+                  <div key={pocket.id} className="bg-slate-800/60 rounded-xl p-3 border border-slate-700 min-h-[220px]">
+                    <div className="text-center mb-2">
+                      <div className="text-3xl mb-1">{POCKET_ICONS[pocket.id]}</div>
+                      <h3 className="font-bold text-sm text-amber-300">{POCKET_LABELS[pocket.id]}</h3>
+                    </div>
+                    <button
+                        onClick={() => handlePocketClick(pocket.id as 'left' | 'right' | 'hoodie')}
+                        disabled={!selectedSheet}
+                        className={`w-full py-1.5 rounded-lg mb-2 font-bold text-sm transition-all ${
+                            selectedSheet
+                                ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                                : 'bg-slate-700 text-slate-500 cursor-not-allowed'
+                        }`}
+                    >
+                      {selectedSheet ? '⬇ Положить сюда' : 'Выбери шпору'}
+                    </button>
+                    <div className="space-y-1">
+                      {pocket.id === 'right' && (
+                          <div className="p-1 bg-blue-900/40 border border-blue-500 rounded text-xs text-blue-200 text-center">
+                            📱 Телефон
+                          </div>
+                      )}
+                      {pocket.sheets.map((s) => (
+                          <div key={s.id} className="p-1.5 bg-amber-100 text-slate-900 rounded flex justify-between items-center text-sm">
+                            <span className="font-bold text-xs">📄 {s.id}</span>
+                            <button onClick={() => removeFromPocket(pocket.id, s.id)} className="text-red-600 hover:text-red-400 font-bold text-xs">✕</button>
+                          </div>
+                      ))}
+                    </div>
+                  </div>
+              ))}
             </div>
           </div>
 
-          <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {pockets.map((pocket) => (
-              <div key={pocket.id} className="bg-slate-800/60 rounded-2xl p-5 border border-slate-700 min-h-[300px]">
-                <div className="text-center mb-3">
-                  <div className="text-5xl mb-2">{POCKET_ICONS[pocket.id]}</div>
-                  <h3 className="font-bold text-lg text-amber-300">{POCKET_LABELS[pocket.id]}</h3>
-                </div>
-                <button onClick={() => handlePocketClick(pocket.id as 'left' | 'right' | 'hoodie')} disabled={!selectedSheet}
-                  className={`w-full py-3 rounded-lg mb-3 font-bold transition-all ${selectedSheet ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-slate-700 text-slate-500 cursor-not-allowed'}`}>
-                  {selectedSheet ? '⬇ Положить сюда' : 'Выбери шпору'}
-                </button>
-                <div className="space-y-2">
-                  {pocket.id === 'right' && <div className="p-2 bg-blue-900/40 border border-blue-500 rounded-lg text-sm text-blue-200">📱 Телефон (фиксирован)</div>}
-                  {pocket.sheets.map((s) => (
-                    <div key={s.id} className="p-2 bg-amber-100 text-slate-900 rounded-lg flex justify-between items-center">
-                      <span className="font-bold">📄 {s.id}</span>
-                      <button onClick={() => removeFromPocket(pocket.id, s.id)} className="text-red-600 hover:text-red-400 font-bold">✕</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+          {/* Таблица типов вопросов — уменьшена */}
+          <div className="mt-4 bg-slate-800/60 rounded-xl p-3 border border-slate-700">
+            <h3 className="font-bold mb-2 text-amber-300 text-sm">📋 Типы вопросов на экзамене</h3>
+            <div className="grid grid-cols-5 gap-1 text-center">
+              {['А', 'Б', 'В', 'Г', 'Д'].map((t) => (
+                  <div key={t} className="bg-slate-900/50 rounded p-1.5">
+                    <div className="text-base font-bold text-amber-300">Тип {t}</div>
+                    <div className="text-[10px] text-slate-400">Шпоры: {t}1, {t}2</div>
+                  </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <div className="mt-6 bg-slate-800/60 rounded-2xl p-5 border border-slate-700">
-          <h3 className="font-bold mb-3 text-amber-300">📋 Типы вопросов на экзамене</h3>
-          <div className="grid grid-cols-5 gap-2 text-center">
-            {['А', 'Б', 'В', 'Г', 'Д'].map((t) => (
-              <div key={t} className="bg-slate-900/50 rounded-lg p-3">
-                <div className="text-2xl font-bold text-amber-300">Тип {t}</div>
-                <div className="text-xs text-slate-400 mt-1">Шпоры: {t}1, {t}2</div>
-              </div>
-            ))}
+          {/* Кнопки внизу — уменьшены */}
+          <div className="text-center mt-4 flex gap-3 justify-center">
+            <button
+                onClick={handleRandomDistribute}
+                className="px-4 py-2 rounded-xl font-bold text-sm bg-slate-600 hover:bg-slate-500 text-white shadow-md"
+            >
+              🎲 Случайно
+            </button>
+            <button
+                onClick={() => onStart(pockets)}
+                disabled={!allPlaced}
+                className={`px-6 py-2 rounded-xl font-bold text-base transition-all ${
+                    allPlaced
+                        ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white shadow-md shadow-emerald-500/50 hover:scale-105'
+                        : 'bg-slate-700 text-slate-500 cursor-not-allowed'
+                }`}
+            >
+              {allPlaced ? '🎓 Начать экзамен' : `Осталось: ${sheets.length - pockets.reduce((a, p) => a + p.sheets.length, 0)}`}
+            </button>
           </div>
-        </div>
-
-        <div className="text-center mt-8 flex gap-4 justify-center">
-          <button onClick={handleRandomDistribute} className="px-8 py-4 rounded-2xl font-bold text-xl bg-slate-600 hover:bg-slate-500 text-white shadow-lg">🎲 Случайно</button>
-          <button onClick={() => onStart(pockets)} disabled={!allPlaced}
-            className={`px-12 py-4 rounded-2xl font-bold text-2xl transition-all ${allPlaced ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white shadow-2xl shadow-emerald-500/50 hover:scale-105' : 'bg-slate-700 text-slate-500 cursor-not-allowed'}`}>
-            {allPlaced ? '🎓 Начать экзамен' : `Осталось разложить: ${sheets.length - pockets.reduce((a, p) => a + p.sheets.length, 0)}`}
-          </button>
         </div>
       </div>
-    </div>
   );
 }
