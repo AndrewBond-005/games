@@ -8,7 +8,7 @@ import React from 'react';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <BrowserRouter>
+        <BrowserRouter basename="/games">
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/game/:gameId" element={<GameWrapper  />} />
