@@ -11,7 +11,7 @@ createRoot(document.getElementById('root')!).render(
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/game/:gameId" element={<GameWrapper gameId={'exam-cheat'} />} />
+                <Route path="/game/:gameId" element={<GameWrapper  />} />
             </Routes>
         </BrowserRouter>
     </StrictMode>
